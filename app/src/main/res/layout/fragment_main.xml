@@ -6,12 +6,21 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.elearnna.popularmovies.MainActivityFragment"
+    tools:context=".MoviesFragment"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+
+    <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
-
+        android:id="@+id/myGrid"
+        android:layout_margin="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:numColumns="auto_fit"
+        android:gravity="center"
+        android:horizontalSpacing="1dp"
+        android:verticalSpacing="3dp"
+        android:stretchMode="columnWidth"
+        />
 </RelativeLayout>

@@ -1,14 +1,18 @@
 package com.elearnna.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -30,28 +34,24 @@ public class MoviesFragment extends Fragment {
     private GridView mGridView;
     String[] postersArray;
     private Context mCntext;
+    ImageAdapter imgAdapter;
     public MoviesFragment() {
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        FetchMoviesTask moviesTask = new FetchMoviesTask();
-        moviesTask.execute("popularity.desc");
-        Log.v(TAG, "onAttach");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCntext = getActivity().getApplicationContext();
-        Log.v(TAG, "onCreate");
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.v(TAG, "onActivityCreated");
     }
 
     @Override
@@ -59,11 +59,30 @@ public class MoviesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         mGridView = (GridView) view.findViewById(R.id.myGrid);
+        FetchMoviesTask moviesTask = new FetchMoviesTask();
+        moviesTask.execute("popularity.desc");
+        Handler handler = new Handler(Looper.getMainLooper());
+        final Runnable r = new Runnable() {
+            public void run() {
+                if (isAdded()) {
+                    imgAdapter = new ImageAdapter(mCntext, postersArray);
+                    mGridView.setAdapter(imgAdapter);
+                }
+            }
+        };
+        handler.postDelayed(r, 1000);
+        // Show a toast message when clicking a poster
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
-        if (isAdded()) {
-            ImageAdapter imgAdapter = new ImageAdapter(mCntext, postersArray);
-            mGridView.setAdapter(imgAdapter);
-        }
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String msg = (String)imgAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), MovieDetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, msg);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 
@@ -92,6 +111,7 @@ public class MoviesFragment extends Fragment {
         }
         @Override
         protected String[] doInBackground(String... params) {
+            String[] strMovies = {};
             if(params.length == 0){
                 return null;
             }
@@ -152,11 +172,11 @@ public class MoviesFragment extends Fragment {
                 }
             }
             try{
-                return getMoviesDataFromJSon(strMoviesJSon);
+                strMovies = getMoviesDataFromJSon(strMoviesJSon);
             }catch(JSONException e){
                 Log.e(LOG_TAG, e.getMessage(), e);
             }
-            return null;
+            return strMovies;
         }
     }
 }

@@ -19,7 +19,9 @@ public class ImageAdapter extends BaseAdapter {
     public ImageAdapter(Context contxt, String[] images){
         this.context = contxt;
         this.images = images;
-        this.numOfImages = images.length;
+        if(images.length > 0) {
+            this.numOfImages = images.length;
+        }
     }
 
     @Override
@@ -42,7 +44,7 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null){
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(500,500));
+            imageView.setLayoutParams(new GridView.LayoutParams(700,700));
 //            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 //            imageView.setPadding(8, 8, 8 ,8);
         } else {

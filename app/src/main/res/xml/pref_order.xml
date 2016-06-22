@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+<PreferenceCategory android:title="Movies Sort Order">
+    <ListPreference
+        android:key="sort_order"
+        android:title="Movies Order"
+        android:entries="@array/movies_order_by"
+        android:entryValues="@array/movies_order_alias"/>
+</PreferenceCategory>
+</PreferenceScreen>

@@ -1,20 +1,97 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.elearnna.popularmovies.MovieDetailActivityFragment"
-    tools:showIn="@layout/activity_movie_detail">
+    tools:showIn="@layout/activity_movie_detail"
+    android:weightSum="1">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="#1aa1fb"
+                android:layout_weight="0.20">
 
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/movieThumb"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="59dp" />
-</RelativeLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Large Text"
+                    android:id="@+id/movieTitle"
+                    android:background="@color/movieTitleBGColor"
+                    android:textColor="@color/movieTitleFGColor"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textSize="25sp"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/moviePoster"
+                        android:paddingTop="@dimen/poster_margin"
+                        android:paddingLeft="@dimen/poster_margin"
+                        android:paddingBottom="@dimen/poster_margin"
+                        android:paddingRight="@dimen/poster_margin"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/movieDate"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:paddingTop="@dimen/date_margin"
+                        android:paddingBottom="@dimen/date_margin"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/movieVoteRate"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rounded_corner"
+                        android:textColor="@color/movieTitleFGColor"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/movieThumb"
+                    android:paddingLeft="@dimen/poster_margin"
+                    android:paddingTop="@dimen/poster_margin"
+                    android:paddingBottom="@dimen/poster_margin"
+                    android:paddingRight="@dimen/poster_margin"
+                    android:layout_gravity="center_vertical|right"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

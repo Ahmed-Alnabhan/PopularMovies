@@ -7,9 +7,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -35,6 +38,7 @@ public class MoviesFragment extends Fragment {
     String[] postersArray;
     private Context mCntext;
     ImageAdapter imgAdapter;
+    private ArrayList<String> aMovieInfo;
     public MoviesFragment() {
     }
 
@@ -55,12 +59,16 @@ public class MoviesFragment extends Fragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         mGridView = (GridView) view.findViewById(R.id.myGrid);
-        FetchMoviesTask moviesTask = new FetchMoviesTask();
-        moviesTask.execute("popularity.desc");
+        updateMoviesSort();
         Handler handler = new Handler(Looper.getMainLooper());
         final Runnable r = new Runnable() {
             public void run() {
@@ -71,19 +79,32 @@ public class MoviesFragment extends Fragment {
             }
         };
         handler.postDelayed(r, 1000);
-        // Show a toast message when clicking a poster
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String msg = (String)imgAdapter.getItem(position);
+                //String msg = (String)imgAdapter.getItem(position);
+                String selectedMovieInfo = aMovieInfo.get(position).toString();
                 Intent intent = new Intent(getActivity(), MovieDetailActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, msg);
+                        .putExtra("Movie", selectedMovieInfo);
                 startActivity(intent);
             }
         });
         return view;
+    }
+
+    private void updateMoviesSort(){
+        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
+        String sort = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popular));
+        fetchMoviesTask.execute(sort);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMoviesSort();
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, String[]>{
@@ -91,21 +112,24 @@ public class MoviesFragment extends Fragment {
         private String[] getMoviesDataFromJSon(String moviesJSONString) throws JSONException{
             final String MOVIES_RESULTS = "results";
             final String MOVIE_POSTER_PATH = "poster_path";
-            final String PIC_URL = "https://image.tmdb.org/t/p/w185/";
+            final String PIC_URL = "https://image.tmdb.org/t/p/w185";
             String moviePoster;
 
             JSONObject moviesJson = new JSONObject(moviesJSONString);
             JSONArray moviesArray = moviesJson.getJSONArray(MOVIES_RESULTS);
 
             postersArray = new String[moviesArray.length()];
-            for (int i = 0; i < moviesArray.length(); i++){
-                JSONObject movieData = moviesArray.getJSONObject(i);
-                //JSONObject moviePosterObject = movieData.getJSONObject(MOVIE_POSTER_PATH);
-                moviePoster = movieData.getString(MOVIE_POSTER_PATH);
-                postersArray[i] = PIC_URL + moviePoster;
-            }
-            for(String s: postersArray){
-                Log.v(LOG_TAG, "Poster's path: " + s);
+            aMovieInfo = new ArrayList<>();
+            if (moviesArray != null) {
+                for (int i = 0; i < moviesArray.length(); i++) {
+                    JSONObject movieData = moviesArray.getJSONObject(i);
+                    moviePoster = movieData.getString(MOVIE_POSTER_PATH);
+                    postersArray[i] = PIC_URL + moviePoster;
+                    aMovieInfo.add(moviesArray.get(i).toString());
+                }
+                for (String s : postersArray) {
+                    Log.v(LOG_TAG, "Poster's path: " + s);
+                }
             }
             return postersArray;
         }
@@ -118,8 +142,6 @@ public class MoviesFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String strMoviesJSon = null;
-
-            String sort = "popularity.desc";
             try{
                 // Create the url
                 final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/discover/movie?";

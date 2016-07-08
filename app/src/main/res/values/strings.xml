@@ -4,12 +4,9 @@
     <string name="title_activity_movie_detail">Movie Detail</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_movie_sort_order">Movies Sort Order</string>
-    <string-array name="movies_order_by">
-        <item>Most Popular</item>
-        <item>Highest Rated</item>
-    </string-array>
-    <string-array name="movies_order_alias">
-        <item>most_popular</item>
-        <item>highest_rated</item>
-    </string-array>
+    <string name="pref_sort_key" trnaslatable="false">sort</string>
+    <string name="pref_sort_popular" translatable="false">popularity.desc</string>
+    <string name="pref_sort_top_rated" translatable="false">vote_average.desc</string>
+    <string name="pref_sort_label_popular">Most Popular</string>
+    <string name="pref_sort_label_highest_rated">Highest Rated</string>
 </resources>
